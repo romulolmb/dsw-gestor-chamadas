@@ -483,3 +483,15 @@
 2018-10-03 20:42:02,341 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\main\resources
 2018-10-03 20:42:02,344 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2018-10-03 20:42:02,354 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\test\resources
+2018-10-03 20:47:47,530 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2018-10-03 20:47:47,531 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\main\resources
+2018-10-03 20:47:47,531 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2018-10-03 20:47:47,536 [Worker-18] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\test\resources
+2018-10-03 20:47:58,937 [Worker-16] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2018-10-03 20:47:58,941 [Worker-16] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\main\resources
+2018-10-03 20:47:58,945 [Worker-16] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2018-10-03 20:47:58,949 [Worker-16] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\test\resources
+2018-10-03 20:48:18,257 [Worker-21] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2018-10-03 20:48:18,257 [Worker-21] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\main\resources
+2018-10-03 20:48:18,258 [Worker-21] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2018-10-03 20:48:18,262 [Worker-21] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\labccet\Documents\DSW\chamadas\src\test\resources

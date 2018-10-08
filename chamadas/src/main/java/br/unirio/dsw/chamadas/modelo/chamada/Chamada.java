@@ -1,10 +1,11 @@
 package br.unirio.dsw.chamadas.modelo.chamada;
 
-import java.awt.List;
+import java.util.List;
 import java.util.ArrayList;
 
 import org.joda.time.DateTime;
 
+import br.unirio.dsw.chamadas.modelo.unidade.GestorUnidade;
 import lombok.Getter;
 import lombok.Setter;
 

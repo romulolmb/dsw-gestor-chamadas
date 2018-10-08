@@ -13,17 +13,17 @@ public class CampoChamada {
 	private @Getter @Setter int tipo;
 	private @Getter @Setter int decimais;
 	private @Getter @Setter int opcional;
-	private @Getter @Setter jsonOpcoes TEXT;
+	private @Getter @Setter String jsonOpcoes;
 	
 	
-	public CampoChamada(int id, int idChamada, String titulo, int tipo, int decimais, int opcional, jsonOpcoes tEXT) {
+	public CampoChamada(int id, int idChamada, String titulo, int tipo, int decimais, int opcional, String jsonOpcoes) {
 		this.id = id;
 		this.idChamada = idChamada;
 		this.titulo = titulo;
 		this.tipo = tipo;
 		this.decimais = decimais;
 		this.opcional = opcional;
-		TEXT = tEXT;
+		this.jsonOpcoes = jsonOpcoes;
 	}
 	
 	

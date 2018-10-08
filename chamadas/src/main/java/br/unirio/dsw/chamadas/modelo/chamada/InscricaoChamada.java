@@ -16,10 +16,10 @@ public class InscricaoChamada {
 	private @Setter @Getter int idChamada;
 	private @Setter @Getter int idUsuario;
 	private @Setter @Getter DateTime dataInscricao;
-	private @Setter @Getter int cancelada;
+	private @Setter @Getter boolean cancelada;
 	
 	public InscricaoChamada(int id, DateTime dataRegistro, DateTime dataAtualizacao, 
-			int idChamada, int idUsuario, DateTime dataInscricao, int cancelada) {
+			int idChamada, int idUsuario, DateTime dataInscricao, boolean cancelada) {
 		this.id = id;
 		this.dataRegistro = dataRegistro;
 		this.dataAtualizacao = dataAtualizacao;

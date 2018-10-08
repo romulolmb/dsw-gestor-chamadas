@@ -21,18 +21,18 @@ public class ChamadaDAO extends AbstractDAO
 	
 	private Chamada carrega(ResultSet rs) throws SQLException
 	{
-		Chamada user  = new Chamada();
-		user.setId(rs.getInt("id"));
+		Chamada chamada  = new Chamada();
+		chamada.setId(rs.getInt("id"));
 		/*user.setDataRegistro(rs.getString("dataRegistro"));
 		user.setDataAtualizacao(rs.getString("dataAtualizacao"));*/
-		user.setIdUnidade(rs.getInt("idUnidade"));
-		user.setNome(rs.getString("nome"));
-		user.setSigla(rs.getString("sigla"));
+		chamada.setIdUnidade(rs.getInt("idUnidade"));
+		chamada.setNome(rs.getString("nome"));
+		chamada.setSigla(rs.getString("sigla"));
 		/*user.setDataAbertura(rs.getString("dataAbertura"));
 		user.setDataEncerramento(rs.getString("dataEncerramento"));*/
-		user.setCancelada(rs.getInt("cancelada"));
-		user.setEncerrada(rs.getInt("encerrada"));
-		return user;
+		chamada.setCancelada(rs.getInt("cancelada"));
+		chamada.setEncerrada(rs.getInt("encerrada"));
+		return chamada;
 	
 	}
 	

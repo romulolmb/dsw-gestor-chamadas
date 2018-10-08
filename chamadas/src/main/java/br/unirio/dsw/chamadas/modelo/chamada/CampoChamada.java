@@ -25,8 +25,7 @@ public class CampoChamada {
 		this.opcional = opcional;
 		this.jsonOpcoes = jsonOpcoes;
 	}
-	
-	
+
 	
 	
 

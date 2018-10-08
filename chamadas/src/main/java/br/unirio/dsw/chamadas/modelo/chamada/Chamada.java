@@ -40,6 +40,54 @@ public class Chamada {
 		this.camposChamada = new ArrayList<CampoChamada>();
 	}
 	
+	/**
+	 * Conta o número de campos de chamada 
+	 */
+	public int contaCamposChamada()
+	{
+		return camposChamada.size();
+	}
+	
+	/**
+	 * Retorna um campo da chamada, dado seu índice
+	 */
+	public CampoChamada pegaCampoChamdaIndice(int indice)
+	{
+		return camposChamada.get(indice);
+	}
+	
+	/**
+	 * Retorna todos os gestores da unidade
+	 */
+	public Iterable<CampoChamada> pegaCamposChamada()
+	{
+		return camposChamada;
+	}
+	
+	/**
+	 * Adiciona um campo na chamada
+	 */
+	public void adicionaCampoChamada(int id, int idChamada, String titulo, int tipo, int decimais, int opcional, String jsonOpcoes)
+	{
+		camposChamada.add(new CampoChamada(id, idChamada, titulo, tipo, decimais, opcional, jsonOpcoes));
+	}
+
+	/**
+	 * Remove um campo, dado seu ID
+	 */
+	public void removeCampoChamada(int id)
+	{
+		camposChamada.removeIf(g -> g.getId() == id); 
+	}
+	
+	/**
+	 * Remove todos os campos da chamada
+	 */
+	public void limpaCampoChamada()
+	{
+		camposChamada.clear();
+	}
+	
 
 	
 	

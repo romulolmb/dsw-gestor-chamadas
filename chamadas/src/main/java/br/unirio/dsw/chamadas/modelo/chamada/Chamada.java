@@ -23,7 +23,9 @@ public class Chamada {
 	private @Setter @Getter int encerrada;
 	private List<CampoChamada> camposChamada;
 	
-	
+	/**
+	 *  Inicia uma chamada
+	 */
 	public Chamada(int id, DateTime dataRegistro, DateTime dataAtualizacao, int idUnidade, String nome, String sigla,
 			DateTime dataAbertura, DateTime dataEncerramento, int cancelada, int encerrada) {
 		
@@ -67,9 +69,9 @@ public class Chamada {
 	/**
 	 * Adiciona um campo na chamada
 	 */
-	public void adicionaCampoChamada(int id, int idChamada, String titulo, int tipo, int decimais, int opcional, String jsonOpcoes)
+	public void adicionaCampoChamada(int id, String titulo, int tipo, int decimais, int opcional, String jsonOpcoes)
 	{
-		camposChamada.add(new CampoChamada(id, idChamada, titulo, tipo, decimais, opcional, jsonOpcoes));
+		camposChamada.add(new CampoChamada(id, titulo, tipo, decimais, opcional, jsonOpcoes));
 	}
 
 	/**

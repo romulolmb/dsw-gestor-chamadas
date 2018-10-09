@@ -9,10 +9,8 @@ public class InscricaoCampoChamada {
 	private @Setter @Getter int idCampoChamada;
 	private @Setter @Getter String valor;
 	
-	public InscricaoCampoChamada(int id, int idInscricao, int idCampoChamada, String valor) {
+	public InscricaoCampoChamada(int id, String valor) {
 		this.id = id;
-		this.idInscricao = idInscricao;
-		this.idCampoChamada = idCampoChamada;
 		this.valor = valor;
 	}
 }

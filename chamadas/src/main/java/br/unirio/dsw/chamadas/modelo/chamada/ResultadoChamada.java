@@ -13,4 +13,8 @@ public class ResultadoChamada {
 		this.idChamada = idChamada;
 		this.valor = valor;
 	}
+	public ResultadoChamada(int id, String valor) {
+		this.id = id;
+		this.valor = valor;
+	}
 }

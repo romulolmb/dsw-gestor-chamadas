@@ -12,7 +12,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import br.unirio.dsw.chamadas.modelo.usuario.Usuario;
-import br.unirio.dsw.utils.DateUtils;
+import br.unirio.dsw.chamadas.ultils.DateUtils;
 import lombok.Data;
 
 /**
@@ -219,8 +219,8 @@ public class UsuarioDAO extends AbstractDAO
 		{
 			CallableStatement cs = c.prepareCall("{call UsuarioInsere(?, ?, ?, ?)}");
 			cs.setString(1, usuario.getNome());
-			cs.setString(2, usuario.getUsername());
-			cs.setString(3, usuario.getPassword());
+			cs.setString(2, usuario.getEmail());
+			cs.setString(3, usuario.getSenha());
 			cs.registerOutParameter(4, Types.INTEGER);
 			cs.execute();
 			usuario.setId(cs.getInt(4));

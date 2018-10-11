@@ -24,11 +24,11 @@ public class UnidadeDAO extends AbstractDAO
 	 */
 	private Unidade carrega(ResultSet rs) throws SQLException
 	{
-		Unidade user = new Unidade();
-		user.setId(rs.getInt("id"));
-		user.setSigla(rs.getString("sigla"));
-		user.setNome(rs.getString("nome"));
-		return user;
+		Unidade unidade = new Unidade();
+		unidade.setId(rs.getInt("id"));
+		unidade.setSigla(rs.getString("sigla"));
+		unidade.setNome(rs.getString("nome"));
+		return unidade;
 	}
 
 	/**

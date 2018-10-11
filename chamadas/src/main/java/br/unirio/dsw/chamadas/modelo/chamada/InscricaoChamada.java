@@ -91,50 +91,50 @@ public class InscricaoChamada {
 	
 	
 	/**
-	 * Conta o número de campos de chamada 
+	 * Conta o número de resultados da chamada
 	 */
-	public int contaCamposChamada()
+	public int contaResultadoChamada()
 	{
-		return camposChamada.size();
+		return resultados.size();
 	}
 	
 	/**
-	 * Retorna um campo da chamada, dado seu índice
+	 * Retorna um resultado de chamada, dado seu índice
 	 */
-	public CampoChamada pegaCampoChamdaIndice(int indice)
+	public ResultadoChamada pegaResuldadoChamadaIndice(int indice)
 	{
-		return camposChamada.get(indice);
+		return resultados.get(indice);
 	}
 	
 	/**
-	 * Retorna todos os gestores da unidade
+	 * Retorna todos os resultados de chamada
 	 */
-	public Iterable<CampoChamada> pegaCamposChamada()
+	public Iterable<ResultadoChamada> pegaResultadoChamado()
 	{
-		return camposChamada;
+		return resultados;
 	}
 	
 	/**
-	 * Adiciona um campo na chamada
+	 * Adiciona um resultado da chamada
 	 */
-	public void adicionaCampoChamada(int id, String titulo, int tipo, int decimais, int opcional, String jsonOpcoes)
+	public void adicionaResultadaChamada(int id, String valor)
 	{
-		camposChamada.add(new CampoChamada(id, titulo, tipo, decimais, opcional, jsonOpcoes));
+		resultados.add(new ResultadoChamada(id, idChamada, valor));
 	}
 
 	/**
-	 * Remove um campo, dado seu ID
+	 * Remove resultado da chamada, dado seu ID
 	 */
 	public void removeCampoChamada(int id)
 	{
-		camposChamada.removeIf(g -> g.getId() == id); 
+		resultados.removeIf(g -> g.getId() == id); 
 	}
 	
 	/**
-	 * Remove todos os campos da chamada
+	 * Remove todos os resultados de chamada 
 	 */
 	public void limpaCampoChamada()
 	{
-		camposChamada.clear();
+		resultados.clear();
 	}
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.joda.time.DateTime;
 
-import br.unirio.dsw.chamadas.modelo.unidade.GestorUnidade;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,18 +15,18 @@ public class Chamada {
 	private @Setter @Getter DateTime dataAtualizacao;
 	private @Setter @Getter int idUnidade;
 	private @Setter @Getter String nome; 
-	private @Setter @Getter String sigla ;
+	private @Setter @Getter String sigla;
 	private @Setter @Getter DateTime dataAbertura;
 	private @Setter @Getter DateTime dataEncerramento;
-	private @Setter @Getter int cancelada; 
-	private @Setter @Getter int encerrada;
+	private @Setter @Getter boolean cancelada; 
+	private @Setter @Getter boolean encerrada;
 	private List<CampoChamada> camposChamada;
 	
 	/**
 	 *  Inicia uma chamada
 	 */
 	public Chamada(int id, DateTime dataRegistro, DateTime dataAtualizacao, int idUnidade, String nome, String sigla,
-			DateTime dataAbertura, DateTime dataEncerramento, int cancelada, int encerrada) {
+			DateTime dataAbertura, DateTime dataEncerramento, boolean cancelada, boolean encerrada) {
 		
 		this.id = id;
 		this.dataRegistro = dataRegistro;
@@ -40,6 +39,10 @@ public class Chamada {
 		this.cancelada = cancelada;
 		this.encerrada = encerrada;
 		this.camposChamada = new ArrayList<CampoChamada>();
+	}
+	
+	public Chamada() {
+		
 	}
 	
 	/**
@@ -69,9 +72,22 @@ public class Chamada {
 	/**
 	 * Adiciona um campo na chamada
 	 */
-	public void adicionaCampoChamada(int id, String titulo, int tipo, int decimais, int opcional, String jsonOpcoes)
+	public void adicionaCampoChamada(int id, String titulo, int tipo, int decimais, boolean opcional, List<String> opcoes)
 	{
-		camposChamada.add(new CampoChamada(id, titulo, tipo, decimais, opcional, jsonOpcoes));
+		CampoChamada campo = new CampoChamada(id, titulo, tipo, decimais, opcional);
+		
+		for (String opcao : opcoes)
+			campo.adicionaOpcao(opcao);
+		
+		camposChamada.add(campo);
+	}
+
+	/**
+	 * Adiciona um campo na chamada
+	 */
+	public void adicionaCampoChamada(CampoChamada campo) 
+	{
+		camposChamada.add(campo);
 	}
 
 	/**
@@ -89,10 +105,4 @@ public class Chamada {
 	{
 		camposChamada.clear();
 	}
-	
-
-	
-	
-	
-
 }

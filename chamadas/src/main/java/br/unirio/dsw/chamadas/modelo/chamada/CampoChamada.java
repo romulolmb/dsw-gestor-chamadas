@@ -66,6 +66,14 @@ public class CampoChamada {
 	}
 	
 	/**
+	 * Remove uma opcao
+	 */
+	public void removeOpcao(String opcao)
+	{
+		opcoes.removeIf(s -> s.equals(opcao));
+	}
+	
+	/**
 	 * Remove todas as opcoes
 	 */
 	public void limpaOpcoes()

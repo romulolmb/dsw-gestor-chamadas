@@ -11,33 +11,35 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
+import br.unirio.dsw.chamadas.modelo.chamada.InscricaoCampoChamada;
 import br.unirio.dsw.chamadas.modelo.chamada.InscricaoChamada;
+import br.unirio.dsw.chamadas.ultils.DateUtils;
 
 /**
- * Classe responsavel pela persistencia de unidades funcionais
+ * Classe responsável pela persistência das Inscrições nas Chamadas
  * 
- * @author Marcio Barros
+ * @author Rômulo Brito
  */
 public class InscricaoChamadaDAO extends AbstractDAO
 {
 	/**
-	 * Carrega os dados de uma unidade a partir do resultado de uma consulta
+	 * Carrega os dados de uma inscrição a partir do resultado de uma consulta
 	 */
 	private InscricaoChamada carrega(ResultSet rs) throws SQLException
 	{
 		int id = rs.getInt("id");
-		DateTime dataRegistro = rs.getDate("dataRegistro");
-		int id = rs.getInt("dataAtualizacao");
-		int id = rs.getInt("idChamada");
-		int id = rs.getInt("idUsuario");
-		int id = rs.getInt("dataInscricao");
-		int id = rs.getInt("cancelada");
-		InscricaoChamada inscricaoChamada = new InscricaoChamada();
+		DateTime dataRegistro = DateUtils.toDateTime(rs.getTimestamp("dataRegistro"));
+		DateTime dataAtualizacao = DateUtils.toDateTime(rs.getTimestamp("dataAtualizacao"));
+		int idChamada = rs.getInt("idChamada");
+		int idUsuario = rs.getInt("idUsuario");
+		DateTime dataInscricao= DateUtils.toDateTime(rs.getTimestamp("dataInscricao"));
+		boolean cancelada = rs.getInt("cancelada") != 0;
+		InscricaoChamada inscricaoChamada = new InscricaoChamada(id, dataRegistro, dataAtualizacao, idChamada, idUsuario, dataInscricao, cancelada);
 		return inscricaoChamada;
 	}
 
 	/**
-	 * Carrega uma unidade, dado seu identificador
+	 * Carrega uma incrição de chamada, dado seu identificador
 	 */
 	public InscricaoChamada carregaInscricaoChamadaId(int id)
 	{
@@ -48,12 +50,12 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			PreparedStatement ps = c.prepareStatement("SELECT * FROM InscricaoChamadaFuncional WHERE id = ?");
+			PreparedStatement ps = c.prepareStatement("SELECT * FROM InscricaoChamada WHERE id = ?");
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
-			InscricaoChamada item = rs.next() ? carrega(rs) : null;
+			InscricaoChamada inscricao = rs.next() ? carrega(rs) : null;
 			c.close();
-			return item;
+			return inscricao;
 
 		} catch (SQLException e)
 		{
@@ -63,14 +65,13 @@ public class InscricaoChamadaDAO extends AbstractDAO
 	}
 
 	/**
-	 * Conta o número de unidades segundo um filtro
+	 * Conta o número de inscrições segundo um filtro de chamada
 	 */
-	public int conta(String sigla, String nome)
+	public int conta(int idChamada)
 	{
 		String SQL = "SELECT COUNT(*) " +
-					 "FROM InscricaoChamadaFuncional " + 
-					 "WHERE sigla like ? " +
-					 "AND nome like ? ";
+					 "FROM InscricaoChamada" + 
+					 "WHERE idChamada = ? ";
 		
 		Connection c = getConnection();
 		
@@ -80,8 +81,7 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		try
 		{
 			PreparedStatement ps = c.prepareStatement(SQL);
-			ps.setString(1, "%" + sigla + "%");
-			ps.setString(2, "%" + nome + "%");
+			ps.setInt(1, idChamada);
 			ResultSet rs = ps.executeQuery();
 			int contador = rs.next() ? rs.getInt(1) : null;
 			c.close();
@@ -95,51 +95,49 @@ public class InscricaoChamadaDAO extends AbstractDAO
 	}
 
 	/**
-	 * Retorna uma lista de unidades segundo um filtro
+	 * Retorna uma lista de Inscrições de uma Chamada
 	 */
-	public List<InscricaoChamada> lista(int pagina, int tamanhoPagina, String sigla, String nome)
+	public List<InscricaoChamada> lista(int pagina, int tamanhoPagina, int idChamada)
 	{
 		String SQL = "SELECT * " +
-					 "FROM InscricaoChamadaFuncional " + 
-					 "WHERE sigla like ? " +
-					 "AND nome like ? " + 
+					 "FROM InscricaoChamada " + 
+					 "WHERE idChamada = ? " +
 					 "LIMIT ? OFFSET ? ";
 		
 		Connection c = getConnection();
-		List<InscricaoChamada> unidades = new ArrayList<InscricaoChamada>();
+		List<InscricaoChamada> inscricoes = new ArrayList<InscricaoChamada>();
 		
 		if (c == null)
-			return unidades;
+			return inscricoes;
 		
 		try
 		{
 			PreparedStatement ps = c.prepareStatement(SQL);
-			ps.setString(1, "%" + sigla + "%");
-			ps.setString(2, "%" + nome + "%");
-			ps.setInt(3, tamanhoPagina);
-			ps.setInt(4, pagina * tamanhoPagina);
+			ps.setInt(1, idChamada);
+			ps.setInt(2, tamanhoPagina);
+			ps.setInt(3, pagina * tamanhoPagina);
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next())
 			{
-				InscricaoChamada unidade = carrega(rs);
-				unidades.add(unidade);
+				InscricaoChamada inscricao = carrega(rs);
+				inscricoes.add(inscricao);
 			}
 			
 			c.close();
-			return unidades;
+			return inscricoes;
 
 		} catch (SQLException e)
 		{
 			log("InscricaoChamadaDAO.listaInscricaoChamadas: " + e.getMessage());
-			return unidades;
+			return inscricoes;
 		}
 	}
 	
 	/**
-	 * Adiciona uma unidade no sistema
+	 * Realiza uma inscrição no sistema
 	 */
-	public boolean cria(InscricaoChamada unidade)
+	public boolean cria(InscricaoChamada inscricao)
 	{
 		Connection c = getConnection();
 		
@@ -148,14 +146,13 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			CallableStatement cs = c.prepareCall("{call InscricaoChamadaFuncionalInsere(?, ?, ?)}");
-			cs.setString(1, unidade.getNome());
-			cs.setString(2, unidade.getSigla());
+			CallableStatement cs = c.prepareCall("{call InscricaoChamadaInsere(?, ?)}");
+			cs.setInt(1, inscricao.getIdChamada());
+			cs.setInt(2, inscricao.getIdUsuario());
 			cs.registerOutParameter(3, Types.INTEGER);
 			cs.execute();
 			
-			adicionaGestores(c, unidade);
-			unidade.setId(cs.getInt(3));
+			inscricao.setId(cs.getInt(3));
 			
 			c.close();
 			return true;
@@ -167,39 +164,9 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		}
 	}
 	
-	/**
-	 * Atualiza uma unidade no sistema
-	 */
-	public boolean atualiza(InscricaoChamada unidade)
-	{
-		Connection c = getConnection();
-		
-		if (c == null)
-			return false;
-		
-		try
-		{
-			CallableStatement cs = c.prepareCall("{call InscricaoChamadaFuncionalAtualiza(?, ?, ?)}");
-			cs.setInt(1, unidade.getId());
-			cs.setString(2, unidade.getNome());
-			cs.setString(3, unidade.getSigla());
-			cs.execute();
-			
-			removeGestores(c, unidade.getId());
-			adicionaGestores(c, unidade);
-
-			c.close();
-			return true;
-
-		} catch (SQLException e)
-		{
-			log("InscricaoChamadaDAO.atualiza: " + e.getMessage());
-			return false;
-		}
-	}
 	
 	/**
-	 * Remove uma unidade no sistema
+	 * Cancela uma inscrição no sistema
 	 */
 	public boolean remove(int idInscricaoChamada)
 	{
@@ -210,7 +177,7 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			CallableStatement cs = c.prepareCall("{call InscricaoChamadaFuncionalRemove(?)}");
+			CallableStatement cs = c.prepareCall("{call InscricaoChamadaCancela(?)}");
 			cs.setInt(1, idInscricaoChamada);
 			cs.execute();
 			c.close();
@@ -222,17 +189,12 @@ public class InscricaoChamadaDAO extends AbstractDAO
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Carrega os gestores de uma unidade
+	 * Insere um campo numa inscrição de chamada
 	 */
-	public boolean carregaGestores(InscricaoChamada unidade)
+	public boolean insereInscricaoCampoChamada(InscricaoCampoChamada inscricaoCampoChamada)
 	{
-		String SQL = "SELECT u.id, u.nome " +
-					 "FROM GestorInscricaoChamadaFuncional g " +
-					 "INNER JOIN Usuario u ON g.idUsuario = u.id " +
-					 "WHERE g.idInscricaoChamada = ?";
-		
 		Connection c = getConnection();
 		
 		if (c == null)
@@ -240,56 +202,23 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			PreparedStatement ps = c.prepareStatement(SQL);
-			ps.setInt(1, unidade.getId());
-			ResultSet rs = ps.executeQuery();
+			CallableStatement cs = c.prepareCall("{call InscricaoChamadaInsereValorCampo(?, ?, ?)}");
 			
-			while (rs.next())
-			{
-				int id = rs.getInt(1);
-				String nome = rs.getString(2);
-				unidade.adicionaGestor(id, nome);
-			}
+			cs.setInt(1, inscricaoCampoChamada.getIdInscricao());
+			cs.setInt(2, inscricaoCampoChamada.getIdCampoChamada());
+			cs.setString(3, inscricaoCampoChamada.getValor());
+			cs.registerOutParameter(3, Types.INTEGER);			
+			cs.execute();
+			
+			inscricaoCampoChamada.setId(cs.getInt(3));
 			
 			c.close();
 			return true;
-	
+
 		} catch (SQLException e)
 		{
-			log("InscricaoChamadaDAO.carregaGestores: " + e.getMessage());
+			log("InscricaoChamadaDAO.insereInscricaoCampoChamada: " + e.getMessage());
 			return false;
 		}
-	}
-
-	/**
-	 * Adiciona os gestores em uma unidade
-	 */
-	private void adicionaGestores(Connection c, InscricaoChamada unidade) throws SQLException
-	{
-		for (GestorInscricaoChamada gestor : unidade.pegaGestores())
-			adicionaGestor(c, unidade.getId(), gestor.getId());
-	}
-
-	/**
-	 * Adiciona um gestor em uma unidade
-	 */
-	private void adicionaGestor(Connection c, int idInscricaoChamada, int idUsuario) throws SQLException
-	{
-		CallableStatement cs = c.prepareCall("{call InscricaoChamadaFuncionalAssociaGestor(?, ?)}");
-		cs.setInt(1, idInscricaoChamada);
-		cs.setInt(2, idUsuario);
-		cs.execute();
-		c.close();
-	}
-
-	/**
-	 * Remove todos os gestores de uma unidade
-	 */
-	private void removeGestores(Connection c, int idInscricaoChamada) throws SQLException
-	{
-		CallableStatement cs = c.prepareCall("{call InscricaoChamadaFuncionalDesassociaGestores(?)}");
-		cs.setInt(1, idInscricaoChamada);
-		cs.execute();
-		c.close();
 	}
 }

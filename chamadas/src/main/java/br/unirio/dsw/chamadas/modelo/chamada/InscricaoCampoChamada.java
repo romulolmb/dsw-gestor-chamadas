@@ -3,7 +3,14 @@ package br.unirio.dsw.chamadas.modelo.chamada;
 import lombok.Getter;
 import lombok.Setter;
 
-public class InscricaoCampoChamada {
+
+/**
+ * Classe que representa o valor de um campo numa inscrição de chamada
+ * @author Rômulo Brito
+ *
+ */
+public class InscricaoCampoChamada 
+{
 	private @Setter @Getter int id;
 	private @Setter @Getter int idInscricao;
 	private @Setter @Getter int idCampoChamada;
@@ -13,4 +20,11 @@ public class InscricaoCampoChamada {
 		this.id = id;
 		this.valor = valor;
 	}
+	
+	public InscricaoCampoChamada() 
+	{
+		
+	}
+	
+	
 }

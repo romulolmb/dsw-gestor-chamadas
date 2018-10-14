@@ -10,7 +10,7 @@ import lombok.Setter;
 
 /**
  * 
- * @author romulolmb
+ * @author Rômulo Brito
  *
  */
 public class InscricaoChamada {
@@ -38,6 +38,15 @@ public class InscricaoChamada {
 		this.cancelada = cancelada;
 		this.inscricoesCampoChamada = new ArrayList<InscricaoCampoChamada>();
 		this.resultados= new ArrayList<ResultadoChamada>();
+	}
+	
+	/**
+	 * Construtor vazio da classe
+	 */
+	public InscricaoChamada() 
+	{
+		this.inscricoesCampoChamada = new ArrayList<InscricaoCampoChamada>();
+		this.resultados = new ArrayList<ResultadoChamada>();
 	}
 	
 	/**

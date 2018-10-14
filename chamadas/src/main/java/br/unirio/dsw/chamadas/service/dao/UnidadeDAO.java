@@ -149,8 +149,8 @@ public class UnidadeDAO extends AbstractDAO
 			cs.registerOutParameter(3, Types.INTEGER);
 			cs.execute();
 			
-			adicionaGestores(c, unidade);
 			unidade.setId(cs.getInt(3));
+			adicionaGestores(c, unidade);
 			
 			c.close();
 			return true;

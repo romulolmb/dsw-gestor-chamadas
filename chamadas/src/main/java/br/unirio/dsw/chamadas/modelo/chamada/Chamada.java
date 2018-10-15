@@ -87,7 +87,7 @@ public class Chamada {
 	/**
 	 * Adiciona um campo na chamada
 	 */
-	public void adicionaCampoChamada(CampoChamada campo) 
+	public void adicionaCamposChamada(CampoChamada campo) 
 	{
 		camposChamada.add(campo);
 	}

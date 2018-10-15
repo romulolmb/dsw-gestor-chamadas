@@ -16,7 +16,11 @@ import br.unirio.dsw.chamadas.modelo.chamada.CampoChamada;
 import br.unirio.dsw.chamadas.modelo.chamada.Chamada;
 import br.unirio.dsw.chamadas.modelo.chamada.ResultadoChamada;
 import br.unirio.dsw.chamadas.ultils.DateUtils;
-
+/**
+ * Classe responsavel pela 
+ * 
+ * @author Mlandrini
+ */
 public class ChamadaDAO extends AbstractDAO
 {	
 	/**
@@ -114,7 +118,7 @@ public class ChamadaDAO extends AbstractDAO
 		while (rs.next())
 		{
 			CampoChamada campo = carregaCampo(rs);
-			chamada.adicionaCampoChamada(campo);
+			chamada.adicionaCamposChamada(campo);
 		}
 	}
 	
@@ -244,7 +248,7 @@ public class ChamadaDAO extends AbstractDAO
 	}
 	
 	/**
-	 * Atualiza uma chamada no sistema
+	 * Atualiza uma Chamada no sistema
 	 */
 	public boolean atualiza(Chamada chamada)
 	{
@@ -277,7 +281,7 @@ public class ChamadaDAO extends AbstractDAO
 	}
 	
 	/**
-	 * Remove uma chamada no sistema
+	 * Remove uma Chamada no sistema
 	 */
 	public boolean remove(int idChamada)
 	{
@@ -325,7 +329,7 @@ public class ChamadaDAO extends AbstractDAO
 			return false;
 		}
 	}
-
+	
 	/**
 	 * Adiciona os campos em uma chamada
 	 */
@@ -356,7 +360,7 @@ public class ChamadaDAO extends AbstractDAO
 	}
 
 	/**
-	 * Remove todos os gestores de uma unidade
+	 * Remove todos os campos de uma chamada
 	 */
 	private void removeCampos(Connection c, Chamada chamada) throws SQLException
 	{
@@ -402,6 +406,5 @@ public class ChamadaDAO extends AbstractDAO
 
 	private void adicionaResultados(Connection c, int idChamada, ResultadoChamada resultadoChamada)
 	{
-		
 	}
 }

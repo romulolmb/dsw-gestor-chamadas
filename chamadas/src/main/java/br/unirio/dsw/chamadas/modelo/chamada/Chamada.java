@@ -127,7 +127,7 @@ public class Chamada {
 	/**
 	 * Retorna todos os resultados de chamada
 	 */
-	public Iterable<ResultadoChamada> pegaResultadoChamado()
+	public Iterable<ResultadoChamada> pegaResultadoChamada()
 	{
 		return resultados;
 	}

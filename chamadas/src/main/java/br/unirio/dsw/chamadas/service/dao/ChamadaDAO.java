@@ -236,6 +236,7 @@ public class ChamadaDAO extends AbstractDAO
 			
 			chamada.setId(cs.getInt(3));
 			adicionaCampos(c, chamada);
+			adicionaResultados(c, chamada);
 			
 			c.close();
 			return true;
@@ -269,6 +270,8 @@ public class ChamadaDAO extends AbstractDAO
 			
 			removeCampos(c, chamada);
 			adicionaCampos(c, chamada);
+			removeResultados(c, chamada);
+			adicionaResultados(c, chamada);
 
 			c.close();
 			return true;
@@ -365,12 +368,18 @@ public class ChamadaDAO extends AbstractDAO
 	private void removeCampos(Connection c, Chamada chamada) throws SQLException
 	{
 		for(CampoChamada campoChamada: chamada.pegaCamposChamada())
-		{
-			CallableStatement cs = c.prepareCall("{call CampoChamadaRemove(?)}");
-			cs.setInt(1, campoChamada.getId());
-			cs.execute();
-			c.close();
-		}
+			removeCampo(c, campoChamada);
+	}
+	
+	/**
+	 * Remove um campo de uma chamada
+	 */
+	private void removeCampo(Connection c, CampoChamada campoChamada) throws SQLException
+	{
+		CallableStatement cs = c.prepareCall("{call CampoChamadaRemove(?)}");
+		cs.setInt(1, campoChamada.getId());
+		cs.execute();
+		c.close();
 	}
 	
 	/**
@@ -403,8 +412,50 @@ public class ChamadaDAO extends AbstractDAO
 			return false;
 		}
 	}
-
-	private void adicionaResultados(Connection c, int idChamada, ResultadoChamada resultadoChamada)
+	
+	/**
+	 * Adiciona os resultados em uma chamada
+	 */
+	private void adicionaResultados(Connection c, Chamada chamada) throws SQLException
 	{
+		for (ResultadoChamada resultadoChamada: chamada.pegaResultadoChamada())
+			adicionaResultado(c, chamada.getId(), resultadoChamada);
+	}
+
+	/**
+	 * Adiciona um resultado em uma chamada
+	 */
+	private void adicionaResultado(Connection c, int idChamada, ResultadoChamada resultadoChamada) throws SQLException
+	{
+		CallableStatement cs = c.prepareCall("{call ChamadaInsereResultado(?, ?, ?)}");
+		cs.setInt(1, idChamada);
+		cs.setString(2, resultadoChamada.getValor());
+		cs.registerOutParameter(3, Types.INTEGER);
+		cs.execute();
+		
+		resultadoChamada.setIdChamada(idChamada);
+		resultadoChamada.setId(cs.getInt(3));
+		
+		c.close();
+	}
+	
+	/**
+	 * Remove todos os resultados de uma chamada
+	 */
+	private void removeResultados(Connection c, Chamada chamada) throws SQLException
+	{
+		for(ResultadoChamada resultadoChamada: chamada.pegaResultadoChamada())
+			removeResultado(c, resultadoChamada);
+	}
+	
+	/**
+	 * Remove um campo de uma chamada
+	 */
+	private void removeResultado(Connection c, ResultadoChamada resultadoChamada) throws SQLException
+	{
+		CallableStatement cs = c.prepareCall("{call ChamadaRemoveResultado(?)}");
+		cs.setInt(1, resultadoChamada.getId());
+		cs.execute();
+		c.close();
 	}
 }

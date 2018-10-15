@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
+import br.unirio.dsw.chamadas.modelo.chamada.CampoChamada;
 import br.unirio.dsw.chamadas.modelo.chamada.InscricaoCampoChamada;
 import br.unirio.dsw.chamadas.modelo.chamada.InscricaoChamada;
 import br.unirio.dsw.chamadas.ultils.DateUtils;
@@ -37,6 +38,21 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		InscricaoChamada inscricaoChamada = new InscricaoChamada(id, dataRegistro, dataAtualizacao, idChamada, idUsuario, dataInscricao, cancelada);
 		return inscricaoChamada;
 	}
+	
+	/**
+	 * Carrega as InscriçõesCampoChamada de um Inscrição
+	 */
+	private InscricaoCampoChamada carregaInscricaoCampoChamada(ResultSet rs) throws SQLException
+	{
+		int id = rs.getInt("id");
+		int idInscricao = rs.getInt("idInscricao");
+		int idCampoChamada = rs.getInt("idCampoChamada");
+		String valor = rs.getString("valor");
+		InscricaoCampoChamada inscricaoCampoChamada = new InscricaoCampoChamada(id, valor);
+		inscricaoCampoChamada.setIdCampoChamada(idCampoChamada);
+		inscricaoCampoChamada.setIdInscricao(idInscricao);
+		return inscricaoCampoChamada;
+	}
 
 	/**
 	 * Carrega uma incrição de chamada, dado seu identificador
@@ -61,6 +77,20 @@ public class InscricaoChamadaDAO extends AbstractDAO
 		{
 			log("InscricaoChamadaDAO.carregaInscricaoChamadaId: " + e.getMessage());
 			return null;
+		}
+	}
+	
+	private void carregaIncricoesCampoChamada(Connection c, InscricaoChamada inscricaoChamada) throws SQLException
+	{
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM InscricaoCampoChamada WHERE idInscricao = ? AND idCampoChamada = ?");
+		ps.setLong(1, inscricaoChamada.getIdChamada());
+		ps.setLong(1, inscricaoChamada.getIdUsuario());
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next())
+		{
+			InscricaoCampoChamada inscricaoCampoChamada = carregaInscricaoCampoChamada(rs);
+			inscricaoChamada.adicionaInscricaoCampoChamada(inscricaoCampoChamada);
 		}
 	}
 

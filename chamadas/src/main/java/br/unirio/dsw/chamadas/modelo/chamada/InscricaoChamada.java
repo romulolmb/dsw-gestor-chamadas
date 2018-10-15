@@ -78,6 +78,11 @@ public class InscricaoChamada {
 	{
 		inscricoesCampoChamada.add(new InscricaoCampoChamada(id, valor));
 	}
+	
+	public void adicionaInscricaoCampoChamada(InscricaoCampoChamada inscricaoCampoChamada)
+	{
+		inscricoesCampoChamada.add(inscricaoCampoChamada);
+	}
 
 	/**
 	 * Remove uma inscricao do campo chamada, dado seu ID

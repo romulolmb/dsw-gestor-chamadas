@@ -9,10 +9,12 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import br.unirio.dsw.chamadas.modelo.chamada.CampoChamada;
 import br.unirio.dsw.chamadas.modelo.chamada.Chamada;
-import br.unirio.dsw.chamadas.modelo.unidade.GestorUnidade;
-import br.unirio.dsw.chamadas.modelo.unidade.Unidade;
+import br.unirio.dsw.chamadas.modelo.chamada.ResultadoChamada;
 import br.unirio.dsw.chamadas.ultils.DateUtils;
 
 public class ChamadaDAO extends AbstractDAO
@@ -46,9 +48,24 @@ public class ChamadaDAO extends AbstractDAO
 		int tipo = rs.getInt("tipo");
 		int decimais = rs.getInt("decimais");
 		boolean opcional = rs.getInt("opcional") != 0;
-		// TODO tratar as opçoes
 		CampoChamada campo = new CampoChamada(id, titulo, tipo, decimais, opcional);
+		Gson gson = new Gson();
+		ArrayList<String> listaOpcoes = gson.fromJson(rs.getString("jsonOpcoes"), new TypeToken<ArrayList<String>>(){}.getType());
+		for(String opcao: listaOpcoes)
+			campo.adicionaOpcao(opcao);
 		return campo;
+	}
+	
+	/**
+	 * Carrega os dados de um resultado da chamada a partir de uma consulta
+	 */
+	private ResultadoChamada carregaResultado(ResultSet rs) throws SQLException
+	{
+		int id = rs.getInt("id");
+		int idChamada = rs.getInt("idChamada");
+		String valor = rs.getString("valor");
+		ResultadoChamada resultado = new ResultadoChamada(id, idChamada, valor);
+		return resultado;
 	}
 
 	/**
@@ -72,6 +89,7 @@ public class ChamadaDAO extends AbstractDAO
 			{
 				item = carregaChamada(rs);
 				carregaCampos(c, item);
+				carregaResultados(c, item);
 			}
 			
 			c.close();
@@ -97,6 +115,22 @@ public class ChamadaDAO extends AbstractDAO
 		{
 			CampoChamada campo = carregaCampo(rs);
 			chamada.adicionaCampoChamada(campo);
+		}
+	}
+	
+	/**
+	 * Carrega todos os campos de uma chamada
+	 */
+	private void carregaResultados(Connection c, Chamada chamada) throws SQLException
+	{
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM ResultadoChamada WHERE idChamada = ?");
+		ps.setLong(1, chamada.getId());
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next())
+		{
+			ResultadoChamada resultado = carregaResultado(rs);
+			chamada.adicionaResultadaChamada(resultado);
 		}
 	}
 
@@ -138,7 +172,7 @@ public class ChamadaDAO extends AbstractDAO
 	public List<Chamada> lista(int pagina, int tamanhoPagina, String filtroNome, String filtroSigla)
 	{
 		String SQL = "SELECT * " +
-					 "FROM UnidadeFuncional " + 
+					 "FROM Chamada " + 
 					 "WHERE nome like ? " +
 					 "AND sigla like ? " + 
 					 "LIMIT ? OFFSET ? ";
@@ -175,11 +209,10 @@ public class ChamadaDAO extends AbstractDAO
 		}
 	}
 
-	// PAREI AQUI 10/10
 	/**
-	 * Adiciona uma unidade no sistema
+	 * Adiciona uma chamada no sistema
 	 */
-	public boolean cria(Unidade unidade)
+	public boolean cria(Chamada chamada)
 	{
 		Connection c = getConnection();
 		
@@ -188,29 +221,32 @@ public class ChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			CallableStatement cs = c.prepareCall("{call UnidadeFuncionalInsere(?, ?, ?)}");
-			cs.setString(1, unidade.getNome());
-			cs.setString(2, unidade.getSigla());
-			cs.registerOutParameter(3, Types.INTEGER);
+			CallableStatement cs = c.prepareCall("{call ChamadaInsere(?, ?, ?, ?, ?, ?)}");
+			cs.setInt(1, chamada.getIdUnidade());
+			cs.setString(2, chamada.getNome());
+			cs.setString(3, chamada.getSigla());
+			cs.setString(4, chamada.getDataAbertura().toString());
+			cs.setString(5, chamada.getDataEncerramento().toString());
+			cs.registerOutParameter(6, Types.INTEGER);
 			cs.execute();
 			
-			adicionaGestores(c, unidade);
-			unidade.setId(cs.getInt(3));
+			chamada.setId(cs.getInt(3));
+			adicionaCampos(c, chamada);
 			
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			log("UnidadeDAO.cria: " + e.getMessage());
+			log("ChamadaDAO.cria: " + e.getMessage());
 			return false;
 		}
 	}
 	
 	/**
-	 * Atualiza uma unidade no sistema
+	 * Atualiza uma chamada no sistema
 	 */
-	public boolean atualiza(Unidade unidade)
+	public boolean atualiza(Chamada chamada)
 	{
 		Connection c = getConnection();
 		
@@ -219,29 +255,31 @@ public class ChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			CallableStatement cs = c.prepareCall("{call UnidadeFuncionalAtualiza(?, ?, ?)}");
-			cs.setInt(1, unidade.getId());
-			cs.setString(2, unidade.getNome());
-			cs.setString(3, unidade.getSigla());
+			CallableStatement cs = c.prepareCall("{call ChamadaAtualiza(?, ?, ?, ?, ?)}");
+			cs.setInt(1, chamada.getId());
+			cs.setString(2, chamada.getNome());
+			cs.setString(3, chamada.getSigla());
+			cs.setString(4, chamada.getDataAbertura().toString());
+			cs.setString(5, chamada.getDataEncerramento().toString());
 			cs.execute();
 			
-			removeGestores(c, unidade.getId());
-			adicionaGestores(c, unidade);
+			removeCampos(c, chamada);
+			adicionaCampos(c, chamada);
 
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			log("UnidadeDAO.atualiza: " + e.getMessage());
+			log("ChamadaDAO.atualiza: " + e.getMessage());
 			return false;
 		}
 	}
 	
 	/**
-	 * Remove uma unidade no sistema
+	 * Remove uma chamada no sistema
 	 */
-	public boolean remove(int idUnidade)
+	public boolean remove(int idChamada)
 	{
 		Connection c = getConnection();
 		
@@ -250,29 +288,24 @@ public class ChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			CallableStatement cs = c.prepareCall("{call UnidadeFuncionalRemove(?)}");
-			cs.setInt(1, idUnidade);
+			CallableStatement cs = c.prepareCall("{call ChamadaRemove(?)}");
+			cs.setInt(1, idChamada);
 			cs.execute();
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			log("UnidadeDAO.remove: " + e.getMessage());
+			log("ChamadaDAO.remove: " + e.getMessage());
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Carrega os gestores de uma unidade
+	 * Encerra uma chamada
 	 */
-	public boolean carregaGestores(Unidade unidade)
+	public boolean encerra(int idChamada)
 	{
-		String SQL = "SELECT u.id, u.nome " +
-					 "FROM GestorUnidadeFuncional g " +
-					 "INNER JOIN Usuario u ON g.idUsuario = u.id " +
-					 "WHERE g.idUnidade = ?";
-		
 		Connection c = getConnection();
 		
 		if (c == null)
@@ -280,56 +313,95 @@ public class ChamadaDAO extends AbstractDAO
 		
 		try
 		{
-			PreparedStatement ps = c.prepareStatement(SQL);
-			ps.setInt(1, unidade.getId());
-			ResultSet rs = ps.executeQuery();
-			
-			while (rs.next())
-			{
-				int id = rs.getInt(1);
-				String nome = rs.getString(2);
-				unidade.adicionaGestor(id, nome);
-			}
-			
+			CallableStatement cs = c.prepareCall("{call ChamadaEncerra(?)}");
+			cs.setInt(1, idChamada);
+			cs.execute();
 			c.close();
 			return true;
-	
+
 		} catch (SQLException e)
 		{
-			log("UnidadeDAO.carregaGestores: " + e.getMessage());
+			log("ChamadaDAO.encerra: " + e.getMessage());
 			return false;
 		}
 	}
 
 	/**
-	 * Adiciona os gestores em uma unidade
+	 * Adiciona os campos em uma chamada
 	 */
-	private void adicionaGestores(Connection c, Unidade unidade) throws SQLException
+	private void adicionaCampos(Connection c, Chamada chamada) throws SQLException
 	{
-		for (GestorUnidade gestor : unidade.pegaGestores())
-			adicionaGestor(c, unidade.getId(), gestor.getId());
+		for (CampoChamada campoChamada: chamada.pegaCamposChamada())
+			adicionaCampo(c, chamada.getId(), campoChamada);
 	}
 
 	/**
-	 * Adiciona um gestor em uma unidade
+	 * Adiciona um campo em uma unidade
 	 */
-	private void adicionaGestor(Connection c, int idUnidade, int idUsuario) throws SQLException
+	private void adicionaCampo(Connection c, int idChamada, CampoChamada campoChamada) throws SQLException
 	{
-		CallableStatement cs = c.prepareCall("{call UnidadeFuncionalAssociaGestor(?, ?)}");
-		cs.setInt(1, idUnidade);
-		cs.setInt(2, idUsuario);
+		CallableStatement cs = c.prepareCall("{call CampoChamadaInsere(?, ?, ?, ?, ?, ?, ?)}");
+		cs.setInt(1, idChamada);
+		cs.setString(2, campoChamada.getTitulo());
+		cs.setInt(3, campoChamada.getTipo());
+		cs.setInt(4, campoChamada.getDecimais());
+		cs.setInt(5, campoChamada.isOpcional() ? 1 : 0);
+		cs.setString(6, new Gson().toJson(campoChamada.pegaOpcoes()));
+		cs.registerOutParameter(7, Types.INTEGER);
 		cs.execute();
+		
+		campoChamada.setIdChamada(idChamada);
+		campoChamada.setId(cs.getInt(7));
 		c.close();
 	}
 
 	/**
 	 * Remove todos os gestores de uma unidade
 	 */
-	private void removeGestores(Connection c, int idUnidade) throws SQLException
+	private void removeCampos(Connection c, Chamada chamada) throws SQLException
 	{
-		CallableStatement cs = c.prepareCall("{call UnidadeFuncionalDesassociaGestores(?)}");
-		cs.setInt(1, idUnidade);
-		cs.execute();
-		c.close();
+		for(CampoChamada campoChamada: chamada.pegaCamposChamada())
+		{
+			CallableStatement cs = c.prepareCall("{call CampoChamadaRemove(?)}");
+			cs.setInt(1, campoChamada.getId());
+			cs.execute();
+			c.close();
+		}
+	}
+	
+	/**
+	 * Atualiza um campo de uma chamada
+	 */
+	public boolean atualizaCampoChamada(CampoChamada campoChamada)
+	{
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call CampoChamadaAtualiza(?, ?, ?, ?, ?, ?)}");
+			cs.setInt(1, campoChamada.getId());
+			cs.setString(2, campoChamada.getTitulo());
+			cs.setInt(3, campoChamada.getTipo());
+			cs.setInt(4, campoChamada.getDecimais());
+			cs.setInt(5, campoChamada.isOpcional() ? 1 : 0);
+			cs.setString(6, new Gson().toJson(campoChamada.pegaOpcoes()));
+			cs.execute();
+
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("ChamadaDAO.atualiza: " + e.getMessage());
+			return false;
+		}
+	}
+
+	private void adicionaResultados(Connection c, int idChamada, ResultadoChamada resultadoChamada)
+	{
+		
 	}
 }

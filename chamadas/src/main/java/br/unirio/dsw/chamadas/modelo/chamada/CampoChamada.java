@@ -14,6 +14,7 @@ import lombok.Setter;
 public class CampoChamada {
 	
 	private @Getter @Setter int id;
+	private @Getter @Setter int idChamada;
 	private @Getter @Setter String titulo;
 	private @Getter @Setter int tipo;
 	private @Getter @Setter int decimais;

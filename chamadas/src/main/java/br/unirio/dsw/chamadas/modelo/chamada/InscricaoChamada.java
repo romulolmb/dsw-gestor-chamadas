@@ -22,7 +22,6 @@ public class InscricaoChamada {
 	private @Setter @Getter DateTime dataInscricao;
 	private @Setter @Getter boolean cancelada;
 	private List<InscricaoCampoChamada> inscricoesCampoChamada;
-	private List<ResultadoChamada> resultados;
 	
 	/**
 	 * Inicia incricao chamada
@@ -37,7 +36,6 @@ public class InscricaoChamada {
 		this.dataInscricao = dataInscricao;
 		this.cancelada = cancelada;
 		this.inscricoesCampoChamada = new ArrayList<InscricaoCampoChamada>();
-		this.resultados= new ArrayList<ResultadoChamada>();
 	}
 	
 	/**
@@ -46,7 +44,6 @@ public class InscricaoChamada {
 	public InscricaoChamada() 
 	{
 		this.inscricoesCampoChamada = new ArrayList<InscricaoCampoChamada>();
-		this.resultados = new ArrayList<ResultadoChamada>();
 	}
 	
 	/**
@@ -96,54 +93,5 @@ public class InscricaoChamada {
 	public void limpaInscricaoCampoChamada()
 	{
 		inscricoesCampoChamada.clear();
-	}
-	
-	
-	/**
-	 * Conta o número de resultados da chamada
-	 */
-	public int contaResultadoChamada()
-	{
-		return resultados.size();
-	}
-	
-	/**
-	 * Retorna um resultado de chamada, dado seu índice
-	 */
-	public ResultadoChamada pegaResuldadoChamadaIndice(int indice)
-	{
-		return resultados.get(indice);
-	}
-	
-	/**
-	 * Retorna todos os resultados de chamada
-	 */
-	public Iterable<ResultadoChamada> pegaResultadoChamado()
-	{
-		return resultados;
-	}
-	
-	/**
-	 * Adiciona um resultado da chamada
-	 */
-	public void adicionaResultadaChamada(int id, String valor)
-	{
-		resultados.add(new ResultadoChamada(id, idChamada, valor));
-	}
-
-	/**
-	 * Remove resultado da chamada, dado seu ID
-	 */
-	public void removeCampoChamada(int id)
-	{
-		resultados.removeIf(g -> g.getId() == id); 
-	}
-	
-	/**
-	 * Remove todos os resultados de chamada 
-	 */
-	public void limpaCampoChamada()
-	{
-		resultados.clear();
 	}
 }

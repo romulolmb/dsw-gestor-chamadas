@@ -21,6 +21,7 @@ public class Chamada {
 	private @Setter @Getter boolean cancelada; 
 	private @Setter @Getter boolean encerrada;
 	private List<CampoChamada> camposChamada;
+	private List<ResultadoChamada> resultados;
 	
 	/**
 	 *  Inicia uma chamada
@@ -39,10 +40,11 @@ public class Chamada {
 		this.cancelada = cancelada;
 		this.encerrada = encerrada;
 		this.camposChamada = new ArrayList<CampoChamada>();
+		this.resultados = new ArrayList<ResultadoChamada>();
 	}
 	
 	public Chamada() {
-		
+		camposChamada = new ArrayList<CampoChamada>();
 	}
 	
 	/**
@@ -104,5 +106,53 @@ public class Chamada {
 	public void limpaCampoChamada()
 	{
 		camposChamada.clear();
+	}
+	
+	/**
+	 * Conta o número de resultados da chamada
+	 */
+	public int contaResultadoChamada()
+	{
+		return resultados.size();
+	}
+	
+	/**
+	 * Retorna um resultado de chamada, dado seu índice
+	 */
+	public ResultadoChamada pegaResuldadoChamadaIndice(int indice)
+	{
+		return resultados.get(indice);
+	}
+	
+	/**
+	 * Retorna todos os resultados de chamada
+	 */
+	public Iterable<ResultadoChamada> pegaResultadoChamado()
+	{
+		return resultados;
+	}
+	
+	/**
+	 * Adiciona um resultado da chamada
+	 */
+	public void adicionaResultadaChamada(ResultadoChamada resultado)
+	{
+		resultados.add(resultado);
+	}
+
+	/**
+	 * Remove resultado da chamada, dado seu ID
+	 */
+	public void removeResultado(int id)
+	{
+		resultados.removeIf(g -> g.getId() == id); 
+	}
+	
+	/**
+	 * Remove todos os resultados de chamada 
+	 */
+	public void limpaResultado()
+	{
+		resultados.clear();
 	}
 }
